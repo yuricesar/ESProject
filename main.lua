@@ -110,7 +110,7 @@ function showGameView:tap(e)
 	prepareMoles()
 end
 
-function prepareWorms()
+function prepareMoles()
 	m1 = display.newImage('mole.png', 80.5, 11)
 	m2 = display.newImage('mole.png', 198.5, 51)
 	m3 = display.newImage('mole.png', 338.5, 34)
