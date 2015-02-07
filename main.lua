@@ -52,8 +52,12 @@ local lastMole = {}
 -- Load Sound
 
 local hit = audio.loadSound('hit.wav')
+local gameOver = audio.loadSound('game_over.mp3')
 
 -- Variables
+  
+local groundHogXPositions = {80.5,198.5,338.5,70.5,225.5,376.5,142.5,356.5}
+local groundHogYPositions = {11,51,34,110,136,96,211,186}
 
 local timerSource
 local currentMoles = 0
@@ -81,7 +85,7 @@ function Main()
   playBtn = display.newImage('playBtn.png', display.contentCenterX - 25.5, display.contentCenterY + 40)
   creditsBtn = display.newImage('creditsBtn.png', display.contentCenterX - 40.5, display.contentCenterY + 85)
   titleView = display.newGroup(titleBg, playBtn, creditsBtn)
-
+  media.playSound("gameTrack.mp3",soundComplete)
   startButtonListeners('add')
 end
 
@@ -110,7 +114,7 @@ end
 
 function showGameView:tap(e)
   transition.to(titleView, {time = 300, x = -titleView.height, onComplete = function() startButtonListeners('rmv') display.remove(titleView) titleView = nil end})
-  score = display.newText('0' , 58, 6, native.systemFontBold, 16)
+  score = display.newText('0' , 70, 6, native.systemFontBold, 16)
   score:setTextColor(238, 238, 238)
   countDownText = display.newText(gameTime,290,10,native.systemFontBold,20)
   countDownText:setTextColor(238, 238, 238)
@@ -118,7 +122,7 @@ function showGameView:tap(e)
 end
 
 function prepareMoles()
-  m1 = display.newImage('mole.png', 80.5, 11)
+   m1 = display.newImage('mole.png', 80.5, 11)
   m2 = display.newImage('mole.png', 198.5, 51)
   m3 = display.newImage('mole.png', 338.5, 34)
   m4 = display.newImage('mole.png', 70.5, 110)
@@ -126,7 +130,7 @@ function prepareMoles()
   m6 = display.newImage('mole.png', 376.5, 96)
   m7 = display.newImage('mole.png', 142.5, 211)
   m8 = display.newImage('mole.png', 356.5, 186)
-
+ 
   moles = display.newGroup(m1, m2, m3, m4, m5, m6, m7, m8)
 
   for i = 1, moles.numChildren do
@@ -138,7 +142,7 @@ function prepareMoles()
 end
 
 function startTimer()
-  timerSource = timer.performWithDelay(1400, showMole, 0)
+  timerSource = timer.performWithDelay(1000, showMole, 0)
   clockTimer = timer.performWithDelay(1000,doCountdown,gameTime)
 end
 
@@ -152,10 +156,12 @@ function doCountdown()
 end
 
 function showMole(e)
-  lastMole.isVisible = false
+  lastMole.isVisible = false 
   local randomHole = math.floor(math.random() * 8) + 1
+  lastMole = display.newImage('mole.png',groundHogXPositions[randomHole],groundHogYPositions[randomHole])
+  lastMole:addEventListener('tap', moleHit)
+ -- lastMole = moles[randomHole]
 
-  lastMole = moles[randomHole]
   lastMole:setReferencePoint(display.BottomCenterReferencePoint)
   lastMole.yScale = 0.1
   lastMole.isVisible = true
@@ -185,7 +191,7 @@ function alert()
   timer.cancel(clockTimer)
   timer.cancel(timerSource)
   lastMole.isVisible = false
-
+  audio.play(gameOver)
   local alert = display.newImage('alertBg.png')
   alert:setReferencePoint(display.CenterReferencePoint)
   alert.x = display.contentCenterX
