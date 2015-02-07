@@ -58,7 +58,6 @@ local hit = audio.loadSound('hit.wav')
 local timerSource
 local currentMoles = 0
 local molesHit = 0
-local totalMoles = 10
 
 -- Functions
 
@@ -111,7 +110,7 @@ end
 
 function showGameView:tap(e)
   transition.to(titleView, {time = 300, x = -titleView.height, onComplete = function() startButtonListeners('rmv') display.remove(titleView) titleView = nil end})
-  score = display.newText('0' .. '/' .. totalMoles, 58, 6, native.systemFontBold, 16)
+  score = display.newText('0' , 58, 6, native.systemFontBold, 16)
   score:setTextColor(238, 238, 238)
   countDownText = display.newText(gameTime,290,10,native.systemFontBold,20)
   countDownText:setTextColor(238, 238, 238)
@@ -177,8 +176,8 @@ end
 
 function moleHit:tap(e)
   audio.play(hit)
-  molesHit = molesHit + 1
-  score.text = molesHit .. '/' .. totalMoles
+  molesHit = molesHit + 10
+  score.text = molesHit
   lastMole.isVisible = false
 end
 
@@ -192,7 +191,7 @@ function alert()
   alert.x = display.contentCenterX
   alert.y = display.contentCenterY
   transition.from(alert, {time = 300, xScale = 0.3, yScale = 0.3})
-  local score = display.newText(molesHit .. '/' .. totalMoles, 220, 190, native.systemFontBold, 20)
+  local score = display.newText(molesHit, 220, 190, native.systemFontBold, 20)
   score:setTextColor(204, 152, 102)
 end
 
