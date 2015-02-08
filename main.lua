@@ -51,6 +51,7 @@ local lastMole = {}
 
 -- Load Sound
 
+local ouch = audio.loadSound('ouch.mp3')
 local hit = audio.loadSound('hit.wav')
 local gameOver = audio.loadSound('game_over.mp3')
 
@@ -76,6 +77,8 @@ local doCountdown = {}
 local showMole = {}
 local popOut = {}
 local moleHit = {}
+local kingHit = {}
+local soldierHit = {}
 local alert = {}
 
 -- Main Function
@@ -158,8 +161,18 @@ end
 function showMole(e)
   lastMole.isVisible = false 
   local randomHole = math.floor(math.random() * 8) + 1
-  lastMole = display.newImage('mole.png',groundHogXPositions[randomHole],groundHogYPositions[randomHole])
-  lastMole:addEventListener('tap', moleHit)
+  
+  local moleType = math.random (1, 100)
+  if  (moleType < 50) then
+    lastMole = display.newImage('digglet.png',groundHogXPositions[randomHole],groundHogYPositions[randomHole])
+    lastMole:addEventListener('tap', moleHit)
+  elseif (moleType > 90) then  
+    lastMole = display.newImage('diggletcrown.png',groundHogXPositions[randomHole],groundHogYPositions[randomHole])
+    lastMole:addEventListener('tap', kingHit)
+  else
+    lastMole = display.newImage('digglethelmetfinished.png',groundHogXPositions[randomHole],groundHogYPositions[randomHole])
+    lastMole:addEventListener('tap', soldierHit)
+  end  
  -- lastMole = moles[randomHole]
 
   lastMole:setReferencePoint(display.BottomCenterReferencePoint)
@@ -183,6 +196,23 @@ end
 function moleHit:tap(e)
   audio.play(hit)
   molesHit = molesHit + 10
+  score.text = molesHit
+  lastMole.isVisible = false
+end
+
+function kingHit:tap(e)
+  audio.play(hit)
+  molesHit = molesHit + 100
+  score.text = molesHit
+  lastMole.isVisible = false
+end
+
+function soldierHit:tap(e)
+  audio.play(ouch)
+  molesHit = molesHit - 20
+  if (molesHit < 0 ) then
+    molesHit = 0
+  end  
   score.text = molesHit
   lastMole.isVisible = false
 end
